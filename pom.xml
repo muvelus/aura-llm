@@ -22,10 +22,29 @@
     <maven.compiler.target>17</maven.compiler.target>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <!-- AWS SDK v2 BOM keeps all aws-sdk module versions aligned -->
+      <dependency>
+        <groupId>software.amazon.awssdk</groupId>
+        <artifactId>bom</artifactId>
+        <version>2.31.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <!-- Amazon Bedrock Converse API client (Claude Sonnet 4.6) -->
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>bedrockruntime</artifactId>
     </dependency>
 
     <dependency>

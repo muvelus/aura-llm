@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class OllamaService {
+public class OllamaService implements LlmService {
     // 2. Inject values from application.properties
     @Value("${ollama.api.url}")
     private String ollamaUrl;
@@ -21,38 +21,49 @@ public class OllamaService {
     @Value("${ollama.model}")
     private String modelName;
 
+    // Adapts the existing Ollama call to the common LlmService contract.
+    @Override
+    public String generate(String prompt) {
+        return callOllama(prompt);
+    }
+
 
     private final String OLLAMA_URL = "http://127.0.0.1:11434/api/generate";
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    // 1. Define the client ONCE as a constant or field
+//    private static final HttpClient CLIENT = HttpClient.newBuilder()
+//            .version(HttpClient.Version.HTTP_2)
+//            .build();
+
     public String callOllama(String promptText) {
         try {
-            // 1. Prepare JSON data safely using a Map
+            HttpClient CLIENT = HttpClient.newBuilder()
+                    .version(HttpClient.Version.HTTP_2)
+                    .build();
+
             Map<String, Object> jsonMap = new HashMap<>();
-            jsonMap.put("model", "mistral");
+            jsonMap.put("model", modelName);
             jsonMap.put("prompt", promptText);
             jsonMap.put("stream", false);
 
             String jsonInput = objectMapper.writeValueAsString(jsonMap);
 
-            // 2. Create HTTP Client (Same as your code)
-            HttpClient client = HttpClient.newHttpClient();
+            // 2. Reuse the existing CLIENT
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(OLLAMA_URL))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(jsonInput))
                     .build();
 
-            // 3. Send Request
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            // The send() method will now use connection pooling automatically
+            HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
 
-            // 4. Parse the "response" field from the JSON output
             if (response.statusCode() == 200) {
                 JsonNode rootNode = objectMapper.readTree(response.body());
                 return rootNode.path("response").asText();
-            } else {
-                return "Error from Ollama: " + response.statusCode();
             }
+            return "Error from Ollama: " + response.statusCode();
 
         } catch (Exception e) {
             e.printStackTrace();
