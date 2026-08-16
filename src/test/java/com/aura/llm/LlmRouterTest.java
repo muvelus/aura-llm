@@ -56,7 +56,7 @@ class LlmRouterTest {
 
     @Test
     void defaultsToOllamaForExistingConfigValue() {
-        startWith("ollama-mistral");
+        startWith("ollama-gemma4-31b-cloud");
 
         assertThat(router.getActiveProvider()).isEqualTo("ollama");
         assertThat(router.generate("hi")).isEqualTo("ollama-reply");
@@ -97,7 +97,7 @@ class LlmRouterTest {
 
     @Test
     void setProviderSwitchesAtRuntimeAndReturnsNormalizedValue() {
-        startWith("ollama-mistral");
+        startWith("ollama-gemma4-31b-cloud");
 
         String applied = router.setProvider("bedrock");
 

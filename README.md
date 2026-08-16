@@ -37,6 +37,6 @@ Example `application.properties` file:
 
 ```properties
 ollama.api.url=http://121.0.0.1:11434/api/generate
-ollama.model=mistral
+ollama.model=gemma4:31b-cloud
 server.port=1025
 ```

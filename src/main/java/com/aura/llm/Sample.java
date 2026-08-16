@@ -12,7 +12,7 @@ public class Sample {
 
     public static void main(String[] args) {
         // 1. Configuration
-        String modelName = "mistral";
+        String modelName = "gemma4:31b-cloud";
         String promptText = "Why is the sky blue?"; // Your message here
         String ollamaUrl = "http://127.0.0.1:11434/api/generate";
 

@@ -21,7 +21,7 @@ public class LlmRouter {
     private final OllamaService ollamaService;
     private final BedrockService bedrockService;
 
-    @Value("${llm.provider:ollama-mistral}")
+    @Value("${llm.provider:ollama-gemma4-31b-cloud}")
     private String configuredProvider;
 
     private volatile String activeProvider;
